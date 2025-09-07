@@ -1,98 +1,40 @@
 import React from "react";
 import Image from "next/image";
-import BookCover from "@/components/BookCover";
-import BorrowBook from "@/components/BorrowBook";
-import { db } from "@/database/drizzle";
-import { users } from "@/database/schema";
-import { eq } from "drizzle-orm";
 
-interface Props extends Book {
-  userId: string;
-}
-const BookOverview = async ({
-  title,
-  author,
-  genre,
-  rating,
-  totalCopies,
-  availableCopies,
-  description,
-  coverColor,
-  coverUrl,
-  id,
-  userId,
-}: Props) => {
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(eq(users.id, userId))
-    .limit(1);
-
-  const borrowingEligibility = {
-    isEligible: availableCopies > 0 && user?.status === "APPROVED",
-    message:
-      availableCopies <= 0
-        ? "Book is not available"
-        : "You are not eligible to borrow this book",
-  };
+const BookOverview = () => {
   return (
-    <section className="book-overview">
-      <div className="flex flex-1 flex-col gap-5">
-        <h1>{title}</h1>
-
-        <div className="book-info">
-          <p>
-            By <span className="font-semibold text-light-200">{author}</span>
-          </p>
-
-          <p>
-            Category{" "}
-            <span className="font-semibold text-light-200">{genre}</span>
-          </p>
-
-          <div className="flex flex-row gap-1">
-            <Image src="/icons/star.svg" alt="star" width={22} height={22} />
-            <p>{rating}</p>
-          </div>
-        </div>
-
-        <div className="book-copies">
-          <p>
-            Total Books <span>{totalCopies}</span>
-          </p>
-
-          <p>
-            Available Books <span>{availableCopies}</span>
-          </p>
-        </div>
-
-        <p className="book-description">{description}</p>
-
-        {user && (
-          <BorrowBook
-            bookId={id}
-            userId={userId}
-            borrowingEligibility={borrowingEligibility}
+    <section className="my-16">
+      <h2 className="font-bebas-neue text-4xl text-light-100 mb-8">
+        About the Author
+      </h2>
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+        <div className="w-48 h-48 relative flex-shrink-0">
+          <Image
+            src="/author.jpg"
+            alt="Author"
+            layout="fill"
+            objectFit="cover"
+            className="rounded-full"
           />
-        )}
-      </div>
-
-      <div className="relative flex flex-1 justify-center">
-        <div className="relative">
-          <BookCover
-            variant="wide"
-            className="z-10"
-            coverColor={coverColor}
-            coverImage={coverUrl}
-          />
-
-          <div className="absolute left-16 top-10 rotate-12 opacity-40 max-sm:hidden">
-            <BookCover
-              variant="wide"
-              coverColor={coverColor}
-              coverImage={coverUrl}
-            />
-          </div>
+        </div>
+        <div className="text-light-300 max-w-3xl">
+          <p className="mb-4">
+            John Doe is a prolific author known for his captivating storytelling
+            and rich characters. With over a decade of experience in writing, he
+            has published numerous bestsellers that have captivated readers
+            worldwide.
+          </p>
+          <p className="mb-4">
+            His works span various genres, including mystery, romance, and
+            science fiction. John’s unique ability to weave intricate plots with
+            relatable characters has earned him a dedicated fanbase.
+          </p>
+          <p>
+            When he’s not writing, John enjoys traveling, exploring new
+            cultures, and spending time with his family. He believes that life
+            experiences greatly influence his writing and often draws
+            inspiration from his adventures.
+          </p>
         </div>
       </div>
     </section>
